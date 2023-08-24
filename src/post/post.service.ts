@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { Model } from 'mongoose';
-import { Post } from './schema/post.schema';
 import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+
 import { CreatePostInput } from './input/create-post.input';
+import { Post } from './schema/post.schema';
+import { v4 } from 'uuid';
 
 @Injectable()
 export class PostService {
@@ -10,7 +12,7 @@ export class PostService {
 
   async criarPost(createPostInput: CreatePostInput) {
     const post = new this.postModel({
-      id: '1',
+      id: v4(),
       descricao: createPostInput.descricao,
       urlImagem: createPostInput.urlImagem,
       likes: 0,
@@ -24,4 +26,6 @@ export class PostService {
   async listarPosts() {
     return this.postModel.find().exec();
   }
+
+  async editarPost() {}
 }
