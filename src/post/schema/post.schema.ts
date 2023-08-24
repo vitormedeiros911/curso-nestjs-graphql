@@ -9,12 +9,15 @@ export class Post {
   id: string;
 
   @Prop()
+  @Field()
   descricao: string;
 
   @Prop()
+  @Field()
   urlImagem: string;
 
   @Prop()
+  @Field()
   likes: number;
 }
 
