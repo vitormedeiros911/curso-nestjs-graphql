@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
@@ -27,5 +27,46 @@ export class PostService {
     return this.postModel.find().exec();
   }
 
-  async editarPost() {}
+  async editarPost(id: string, createPostInput: CreatePostInput) {
+    const post = await this.buscarPost(id);
+
+    post.descricao = createPostInput.descricao;
+    post.urlImagem = createPostInput.urlImagem;
+
+    return await post.save();
+  }
+
+  async excluirPost(id: string) {
+    await this.buscarPost(id);
+
+    await this.postModel.deleteOne({ id }).exec();
+
+    return 'Post excluído com sucesso!';
+  }
+
+  async darLike(id: string) {
+    const post = await this.buscarPost(id);
+
+    post.likes = post.likes + 1;
+
+    return post.save();
+  }
+
+  async removerLike(id: string) {
+    const post = await this.buscarPost(id);
+
+    post.likes = post.likes - 1;
+
+    return post.save();
+  }
+
+  async buscarPost(id: string) {
+    const post = await this.postModel.findOne({ id }).exec();
+
+    if (!post) {
+      throw new NotFoundException('Post não encontrado!');
+    }
+
+    return post;
+  }
 }
